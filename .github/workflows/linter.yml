@@ -27,7 +27,7 @@ jobs:
           echo "$LINK"
 
           if [ -n "$LINK" ]; then
-            RESPONSE=$(curl -sL "$LINK")
+            RESPONSE=$(curl -sL "$LINK" -X GET -u "rdme_xn8s9h268348530854626667f88f93203f4c5a76498822cb0e75300db739bc73f8907e")
 
             # Check for phrases in the response
             if echo "$RESPONSE" | grep -q "FEBRUARY\|Phrase2\|Phrase3"; then
