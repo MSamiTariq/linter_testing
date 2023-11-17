@@ -1,0 +1,40 @@
+name: PR Link Checker
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  pr-link-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Check PR link
+        run: |
+          PR_LINK=$(jq -r .pull_request.body <<<"${{ github.event.before }}")
+          LINK=$(echo "$PR_LINK" | grep -oP '(?<=\[Link\]\()(.*?)(?=\))' | head -n 1)
+
+          if [ -n "$LINK" ]; then
+            RESPONSE=$(curl -sL "$LINK")
+
+            # Check for phrases in the response
+            if echo "$RESPONSE" | grep -q "Phrase1\|Phrase2\|Phrase3"; then
+              echo "PR cannot be merged. Found one of the prohibited phrases."
+              exit 1
+            else
+              echo "No prohibited phrases found. PR can be merged."
+            fi
+          else
+            echo "No link found in the PR description. Proceeding with the merge."
+          fi
