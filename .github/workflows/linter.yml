@@ -24,12 +24,13 @@ jobs:
         run: |
           PR_DESCRIPTION=$(curl -sSL ${{ github.api_url }}/repos/${{ github.repository }}/pulls/${{ github.event.number }} | jq -r '.body')
           LINK=$(echo "$PR_DESCRIPTION" | grep -oP 'https?://\S+')
+          echo "$LINK"
 
           if [ -n "$LINK" ]; then
             RESPONSE=$(curl -sL "$LINK")
 
             # Check for phrases in the response
-            if echo "$RESPONSE" | grep -q "Phrase1\|Phrase2\|Phrase3"; then
+            if echo "$RESPONSE" | grep -q "produced\|Phrase2\|Phrase3"; then
               echo "PR cannot be merged. Found one of the prohibited phrases."
               exit 1
             else
