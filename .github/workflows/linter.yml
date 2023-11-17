@@ -30,7 +30,7 @@ jobs:
             RESPONSE=$(curl -sL "$LINK")
 
             # Check for phrases in the response
-            if echo "$RESPONSE" | grep -q "produced\|Phrase2\|Phrase3"; then
+            if echo "$RESPONSE" | grep -q "Produced\|Phrase2\|Phrase3"; then
               echo "PR cannot be merged. Found one of the prohibited phrases."
               exit 1
             else
