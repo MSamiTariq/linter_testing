@@ -22,8 +22,8 @@ jobs:
 
       - name: Check PR link
         run: |
-          PR_LINK=$(jq -r .pull_request.body <<<"${{ github.event.before }}")
-          LINK=$(echo "$PR_LINK" | grep -oP '(?<=\[Link\]\()(.*?)(?=\))' | head -n 1)
+          PR_DESCRIPTION=$(curl -sSL ${{ github.api_url }}/repos/${{ github.repository }}/pulls/${{ github.event.number }} | jq -r '.body')
+          LINK=$(echo "$PR_DESCRIPTION" | grep -oP 'https?://\S+')
 
           if [ -n "$LINK" ]; then
             RESPONSE=$(curl -sL "$LINK")
